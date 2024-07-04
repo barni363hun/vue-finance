@@ -1,4 +1,4 @@
-type ExchangeRate = {
+export type ExchangeRate = {
   currency: string;
   date: string;
   time: string;

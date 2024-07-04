@@ -26,38 +26,42 @@
           :id="currency"
           :value="currency"
           v-model="selectedCurrency"
+          @click="currencySelected"
         />
         <label :for="currency">{{ currency }}</label>
       </div>
     </div>
 
     <!-- Table to display exchange rates -->
-    <table v-if="exchangeRates">
-      <thead>
-        <tr>
-          <th>Currency</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Unit</th>
-          <th>Buy Rate</th>
-          <th>Middle Rate</th>
-          <th>Sales Rate</th>
-          <th>Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(rate, index) in exchangeRates.exchangeRates" :key="index">
-          <td>{{ rate.currency }}</td>
-          <td>{{ rate.date }}</td>
-          <td>{{ rate.time }}</td>
-          <td>{{ rate.unit }}</td>
-          <td>{{ rate.buyRate }}</td>
-          <td>{{ rate.middleRate }}</td>
-          <td>{{ rate.salesRate }}</td>
-          <td>{{ rate.name }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="tableExchangeRates.length != 0 && !loading">
+      <table>
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Unit</th>
+            <th>Buy Rate</th>
+            <th>Middle Rate</th>
+            <th>Sales Rate</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(rate, index) in tableExchangeRates" :key="index">
+            <td>{{ rate.currency }}</td>
+            <td>{{ rate.date }}</td>
+            <td>{{ rate.time }}</td>
+            <td>{{ rate.unit }}</td>
+            <td>{{ rate.buyRate }}</td>
+            <td>{{ rate.middleRate }}</td>
+            <td>{{ rate.salesRate }}</td>
+            <td>{{ rate.name }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p v-if="tableExchangeRates.length == 0 && !loading">Select a currency</p>
 
     <!-- Display loading indicator -->
     <div v-if="loading">Loading...</div>
@@ -67,16 +71,26 @@
 import { Vue } from "vue-class-component";
 import { ref } from "vue";
 import { makeGetRequest } from "@/services/apiService";
-import { ExchangeRatesData, ParamsType } from "@/types/ExchangeRate";
+import {
+  ExchangeRate,
+  ExchangeRatesData,
+  ParamsType,
+} from "@/types/ExchangeRate";
 
 export default class ExchangeRateTable extends Vue {
   // Data properties
   exchangeRates: ExchangeRatesData | null = null;
+  tableExchangeRates: ExchangeRate[] = [];
   loading = false;
-  fromDateInput = "2024-05-29";
-  toDateInput = "2024-05-29";
+  fromDateInput = this.getAMonthAgoString();
+  toDateInput = this.getTodayString();
   currencies: string[] = [];
   selectedCurrency = "";
+
+  async currencySelected() {
+    await this.fetchExchangeRates();
+    console.log(this.selectedCurrency);
+  }
 
   // Method to fetch exchange rates
   async fetchExchangeRates() {
@@ -94,6 +108,9 @@ export default class ExchangeRateTable extends Vue {
     this.currencies = [
       ...new Set(this.exchangeRates.exchangeRates.map((item) => item.currency)),
     ];
+    this.tableExchangeRates = this.exchangeRates.exchangeRates.filter(
+      (item) => item.currency === this.selectedCurrency
+    );
     this.loading = false;
   }
 
@@ -101,6 +118,28 @@ export default class ExchangeRateTable extends Vue {
   mounted() {
     // Example initial fetch
     this.fetchExchangeRates();
+  }
+
+  private getTodayString(): string {
+    const date = new Date(); // Today's date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+
+  private getAMonthAgoString(): string {
+    const today = new Date(); // Today's date
+    const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
+
+    const year = lastMonth.getFullYear();
+    const month = String(lastMonth.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
+    const day = String(lastMonth.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
   }
 }
 </script>
