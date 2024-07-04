@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Line :data="chartData" />
+    <Line :data="myData" />
   </div>
 </template>
 
@@ -17,6 +17,7 @@ import {
   CategoryScale,
 } from "chart.js";
 import { Chart } from "chart.js/auto";
+import { MyChartData } from "@/types/chart";
 // https://github.com/apertureless/vue-chartjs/issues/695#issuecomment-1001135480
 
 Chart.register(LineElement, Title, Tooltip, Legend, LinearScale, CategoryScale);
@@ -25,18 +26,17 @@ Chart.register(LineElement, Title, Tooltip, Legend, LinearScale, CategoryScale);
   components: {
     Line,
   },
+  props: {
+    myData: Object as () => MyChartData,
+  },
 })
 export default class LineChart extends Vue {
-  chartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Data One",
-        backgroundColor: "#f87979",
-        data: [40, 39, 10, 40, 39, 80, 40],
-      },
-    ],
-  };
+  myData!: MyChartData;
+
+  // mounted() {
+  //   // Example initial fetch
+  //   console.log(this.myData);
+  // }
 
   // Optionally define your chart options
   // options = {
@@ -45,7 +45,3 @@ export default class LineChart extends Vue {
   // };
 }
 </script>
-
-<style scoped>
-/* Add any necessary styles here */
-</style>

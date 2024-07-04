@@ -1,22 +1,35 @@
 <template>
   <div class="home">
-    <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" /> -->
-    <LineChart />
+    <LineChart :myData="chartData" />
     <!-- <ExchangeRateTable /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import ExchangeRateTable from "@/components/ExchangeRateTable.vue";
 import LineChart from "@/components/LineChart.vue";
 @Options({
   components: {
-    HelloWorld,
     ExchangeRateTable,
     LineChart,
   },
 })
-export default class HomeView extends Vue {}
+export default class HomeView extends Vue {
+  chartData = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Data One",
+        backgroundColor: "#f87979",
+        data: [40, 39, 10, 40, 39, 80, 40],
+      },
+      {
+        label: "Data asd",
+        backgroundColor: "#f87079",
+        data: [50, 39, 10, 40, 39, 80, 40],
+      },
+    ],
+  };
+}
 </script>
