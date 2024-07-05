@@ -121,16 +121,6 @@ export default class ChangeCurrency extends Vue {
     console.log(this.getMiddleRate(newVal));
   }
 
-  @Watch("toSelectedCurrencies")
-  private toSelectedCurrenciesChanged(newVal: string[]) {
-    // for (const currency of newVal) {
-    //   console.log(
-    //     this.getMiddleRate(this.fromSelectedCurrency) /
-    //       this.getMiddleRate(currency)
-    //   );
-    // }
-  }
-
   getRate(from: string, to: string) {
     return this.getMiddleRate(from) / this.getMiddleRate(to);
   }

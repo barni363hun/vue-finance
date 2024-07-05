@@ -32,16 +32,5 @@ Chart.register(LineElement, Title, Tooltip, Legend, LinearScale, CategoryScale);
 })
 export default class LineChart extends Vue {
   myData!: MyChartData;
-
-  // mounted() {
-  //   // Example initial fetch
-  //   console.log(this.myData);
-  // }
-
-  // Optionally define your chart options
-  // options = {
-  //   responsive: true,
-  //   maintainAspectRatio: false,
-  // };
 }
 </script>

@@ -124,21 +124,11 @@ export default class ExchangeRateTable extends Vue {
     );
     this.chartData.labels = this.tableExchangeRates.map((item) => item.date);
     this.chartData.datasets = [
-      // {
-      //   label: "Buy Rate",
-      //   data: this.tableExchangeRates.map((item) => item.buyRate),
-      //   backgroundColor: "blue",
-      // },
       {
         label: "Middle Rate",
         data: this.tableExchangeRates.map((item) => item.middleRate),
         backgroundColor: "green",
       },
-      // {
-      //   label: "Sales Rate",
-      //   data: this.tableExchangeRates.map((item) => item.salesRate),
-      //   backgroundColor: "red",
-      // },
     ];
     this.loading = false;
   }
