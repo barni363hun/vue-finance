@@ -93,7 +93,7 @@ export default class ExchangeRateTable extends Vue {
   exchangeRates: ExchangeRatesData | null = null;
   tableExchangeRates: ExchangeRate[] = [];
   loading = false;
-  fromDateInput = this.getAYearAgoString();
+  fromDateInput = this.getTodayString();
   toDateInput = this.getTodayString();
   currencies: string[] = [];
   selectedCurrency = "";

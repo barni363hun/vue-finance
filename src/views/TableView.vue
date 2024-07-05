@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="table">
     <ExchangeRateTable />
   </div>
 </template>
@@ -12,5 +12,5 @@ import ExchangeRateTable from "@/components/ExchangeRateTable.vue";
     ExchangeRateTable,
   },
 })
-export default class HomeView extends Vue {}
+export default class TableView extends Vue {}
 </script>
