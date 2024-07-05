@@ -70,8 +70,8 @@
 </template>
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { ref } from "vue";
 import { makeGetRequest } from "@/services/apiService";
+import { getAYearAgoString, getTodayString } from "@/services/dateService";
 import {
   ExchangeRate,
   ExchangeRatesData,
@@ -93,8 +93,8 @@ export default class ExchangeRateTable extends Vue {
   exchangeRates: ExchangeRatesData | null = null;
   tableExchangeRates: ExchangeRate[] = [];
   loading = false;
-  fromDateInput = this.getTodayString();
-  toDateInput = this.getTodayString();
+  fromDateInput = getAYearAgoString();
+  toDateInput = getTodayString();
   currencies: string[] = [];
   selectedCurrency = "";
 
@@ -147,28 +147,6 @@ export default class ExchangeRateTable extends Vue {
   mounted() {
     // Example initial fetch
     this.fetchExchangeRates();
-  }
-
-  private getTodayString(): string {
-    const date = new Date(); // Today's date
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
-    const day = String(date.getDate()).padStart(2, "0");
-
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-
-  private getAYearAgoString(): string {
-    const today = new Date(); // Today's date
-    const lastYear = new Date(today.setFullYear(today.getFullYear() - 1));
-
-    const year = lastYear.getFullYear();
-    const month = String(lastYear.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
-    const day = String(lastYear.getDate()).padStart(2, "0");
-
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
   }
 }
 </script>
