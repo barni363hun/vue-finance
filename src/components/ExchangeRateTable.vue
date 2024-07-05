@@ -32,8 +32,9 @@
       </div>
     </div>
 
-    <!-- Table to display exchange rates -->
+    <!-- display exchange rates -->
     <div v-if="tableExchangeRates.length != 0 && !loading">
+      <LineChart :myData="chartData" />
       <table>
         <thead>
           <tr>
@@ -68,7 +69,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
 import { ref } from "vue";
 import { makeGetRequest } from "@/services/apiService";
 import {
@@ -76,20 +77,30 @@ import {
   ExchangeRatesData,
   ParamsType,
 } from "@/types/ExchangeRate";
+import LineChart from "@/components/LineChart.vue";
+import { MyChartData } from "@/types/chart";
 
+@Options({
+  components: {
+    LineChart,
+  },
+})
 export default class ExchangeRateTable extends Vue {
-  // Data properties
+  chartData: MyChartData = {
+    labels: [],
+    datasets: [],
+  };
   exchangeRates: ExchangeRatesData | null = null;
   tableExchangeRates: ExchangeRate[] = [];
   loading = false;
-  fromDateInput = this.getAMonthAgoString();
+  fromDateInput = this.getAYearAgoString();
   toDateInput = this.getTodayString();
   currencies: string[] = [];
   selectedCurrency = "";
 
   async currencySelected() {
     await this.fetchExchangeRates();
-    console.log(this.selectedCurrency);
+    // console.log(this.selectedCurrency);
   }
 
   // Method to fetch exchange rates
@@ -111,6 +122,24 @@ export default class ExchangeRateTable extends Vue {
     this.tableExchangeRates = this.exchangeRates.exchangeRates.filter(
       (item) => item.currency === this.selectedCurrency
     );
+    this.chartData.labels = this.tableExchangeRates.map((item) => item.date);
+    this.chartData.datasets = [
+      // {
+      //   label: "Buy Rate",
+      //   data: this.tableExchangeRates.map((item) => item.buyRate),
+      //   backgroundColor: "blue",
+      // },
+      {
+        label: "Middle Rate",
+        data: this.tableExchangeRates.map((item) => item.middleRate),
+        backgroundColor: "green",
+      },
+      // {
+      //   label: "Sales Rate",
+      //   data: this.tableExchangeRates.map((item) => item.salesRate),
+      //   backgroundColor: "red",
+      // },
+    ];
     this.loading = false;
   }
 
@@ -130,13 +159,13 @@ export default class ExchangeRateTable extends Vue {
     return formattedDate;
   }
 
-  private getAMonthAgoString(): string {
+  private getAYearAgoString(): string {
     const today = new Date(); // Today's date
-    const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
+    const lastYear = new Date(today.setFullYear(today.getFullYear() - 1));
 
-    const year = lastMonth.getFullYear();
-    const month = String(lastMonth.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
-    const day = String(lastMonth.getDate()).padStart(2, "0");
+    const year = lastYear.getFullYear();
+    const month = String(lastYear.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so we add 1
+    const day = String(lastYear.getDate()).padStart(2, "0");
 
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
